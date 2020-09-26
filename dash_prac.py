@@ -16,15 +16,38 @@ dfgbConfirmed = pd.read_csv('globalTtl.csv').drop('Unnamed: 0', axis=1)
 fig = px.scatter(dfgbConfirmed, x='Date', y='Global Total')
 
 app = dash.Dash()
-app.layout = html.Div([
-    html.H1(children='Global Data',
-            ),
-    dcc.Graph(
-        id='fstGraph',
-        figure=fig,
-
+app.layout = html.Section([
+    html.div(
+        html.H1(children='Global Data'),
+        html.H2(
+            children=f'Start from 1/22/20 to {dfgbConfirmed.Date.tolist()[-1]}'),
+        dcc.Graph(
+            id='fstGraph',
+            figure=fig,
+        )
+    ),
+    html.div(
+        dcc.Dropdown(
+            id='demo-dropdown',
+            options=[
+                {'label': 'New York City', 'value': 'NYC'},
+                {'label': 'Montreal', 'value': 'MTL'},
+                {'label': 'San Francisco', 'value': 'SF'}
+            ],
+            value='NYC'
+        ),
     )
+
 ])
+
+
+@app.callback(
+    Output(component_id='my-output', component_property='children'),
+    [Input(component_id='my-input', component_property='value')]
+)
+def update_output_div(input_value):
+    return 'Output: {}'.format(input_value)
+
 
 if __name__ == '__main__':
     app.run_server()
