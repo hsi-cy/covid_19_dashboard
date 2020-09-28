@@ -44,6 +44,17 @@ globalActiveCases = globalActiveCases.reset_index().rename(columns={
     'index': 'Date'})
 globalActiveCases.to_csv('active.csv')
 
+dftd = pd.read_csv('confirmed.csv').drop(
+    columns=['Unnamed: 0', 'Date']).iloc[1:][:].reset_index(drop=True)
+dfyst = pd.read_csv('confirmed.csv').drop(
+    columns=['Unnamed: 0', 'Date']).iloc[:-1][:].reset_index(drop=True)
+
+dailyGlobalNewCases = dftd - dfyst
+date = pd.DataFrame({'Date': dfConfirmed.Date[1:]}).reset_index(drop=True)
+frames = [date, dailyGlobalNewCases]
+dailyGlobalNewCases = pd.concat(frames, axis=1)
+dailyGlobalNewCases.to_csv('dailyGlobalNewCases.csv')
+
 
 def globalTotalConfirmed(date):
     dateIndex = int(dfConfirmed.loc[dfConfirmed.Date == date].index.values)
