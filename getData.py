@@ -38,6 +38,12 @@ globalRecoveredByCountriesDateIncluded.to_csv('recovered.csv')
 
 dfConfirmed = pd.read_csv('confirmed.csv').drop('Unnamed: 0', axis=1)
 
+globalActiveCases = (globalConfirmedByCountries -
+                     globalDeathsByCountries - globalRecoveredByCountries)
+globalActiveCases = globalActiveCases.reset_index().rename(columns={
+    'index': 'Date'})
+globalActiveCases.to_csv('active.csv')
+
 
 def globalTotalConfirmed(date):
     dateIndex = int(dfConfirmed.loc[dfConfirmed.Date == date].index.values)

@@ -13,7 +13,18 @@ optCountries = []
 for country in listOfCountries:
     dic = {'label': country, 'value': country}
     optCountries.append(dic)
+
 dfDeaths = pd.read_csv('deaths.csv').drop('Unnamed: 0', axis=1)
+
+dftd = pd.read_csv('confirmed.csv').drop(
+    columns=['Unnamed: 0', 'Date']).iloc[1:][:].reset_index(drop=True)
+dfyst = pd.read_csv('confirmed.csv').drop(
+    columns=['Unnamed: 0', 'Date']).iloc[:-1][:].reset_index(drop=True)
+
+dailyGlobalNewCases = dftd - dfyst
+date = pd.DataFrame({'Date': dfConfirmed.Date[1:]}).reset_index(drop=True)
+frames = [date, dailyGlobalNewCases]
+dailyGlobalNewCases = pd.concat(frames, axis=1)
 
 
 def dfForCountryGraph(countryName):
@@ -25,31 +36,44 @@ def dfForCountryGraph(countryName):
     return plotDf
 
 # dfrecovered = pd.read_csv('recovered.csv').drop('Unnamed: 0', axis=1)
-# print(dfConfirmed.shape)
 
 
 dfgbConfirmed = pd.read_csv('globalTtl.csv').drop('Unnamed: 0', axis=1)
 
 
 app = dash.Dash()
+
 app.layout = html.Div([
-    html.H1(f'Global Total Cases: {dfgbConfirmed['globalTotal'][-1]}')
-]), html.Div([
-    dcc.Dropdown(
-        id='countryDropdown',
-        options=optCountries,
-        value='Select a country.'
-    ),
-    dcc.Graph(
-        id='singleCountryGraph',
-    )])
+    html.Div([
+        html.H1('COVID-19 Dashboard', id='title')
+    ]),
+
+    html.Div([
+        dcc.Dropdown(
+            id='countryDropdown',
+            options=optCountries,
+            value='Select a country.'
+        ),
+        dcc.Graph(
+            id='confirmedGraph',
+        ),
+        dcc.Graph(
+            id='dailyNewGraph',
+        ),
+        dcc.Graph(
+            id='activeGraph',
+        )
+    ])
+])
 
 
-@app.callback(
-    Output(component_id='singleCountryGraph', component_property='figure'),
+@ app.callback(
+    [Output(component_id='singleCountryGraph', component_property='figure'),
+     Output(component_id='dailyNewGraph', component_property='figure'),
+     Output(component_id='activeGraph', component_property='figure')],
     [Input(component_id='countryDropdown', component_property='value')]
 )
-def update_figure(selected_country):
+def update_figure1(selected_country):
     df = dfForCountryGraph(selected_country)
     fig = make_subplots(rows=1)
 
@@ -66,6 +90,14 @@ def update_figure(selected_country):
     #                   marker_line_width=1.5, opacity=0.6)
 
     return fig
+
+
+def update_figure2(selected_country):
+    df2 = dailyGlobalNewCases.copy()
+    fig2 = px.bar(df2, x='Date', y=selected_country)
+    fig2.update_layout(title_text='Daily New Cases')
+
+    return fig2
 
 
 if __name__ == '__main__':
