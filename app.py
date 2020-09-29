@@ -39,8 +39,8 @@ app = dash.Dash()
 
 app.layout = html.Div([
     html.Div([
-        html.H1('COVID-19 Dashboard', id='title')
-    ]),
+        html.H1('COVID-19 Dashboard')
+    ], className='title'),
     html.Div([
         html.Div([
             dcc.Dropdown(
@@ -54,14 +54,13 @@ app.layout = html.Div([
                 id='dailyNewGraph',
             ),
             dcc.Graph(
-                id='activeGraph',
-            )], className='container')],
-        # html.Div([
-
-        # ])
-    )
-
-])
+                id='activeGraph',)
+        ], className='graphContainer'),
+        html.Div([
+            html.H2('Global data will be here')
+        ], className='globalDataContainer')
+    ], className='lowerPartContainer')
+], className='biggestContainer')
 
 
 @ app.callback(
@@ -103,22 +102,6 @@ def update_figure1(selected_country):
     fig3.update_layout(title_text='Active Cases')
 
     return fig, fig2, fig3
-
-
-# def update_figure2(selected_country):
-#     df2 = dailyGlobalNewCases.copy()
-#     fig2 = px.bar(df2, x='Date', y=selected_country)
-#     fig2.update_layout(title_text='Daily New Cases')
-
-#     return fig2
-
-
-# def update_figure3(selected_country):
-#     df3 = dfActive.copy()
-#     fig3 = px.bar(df3, x='Date', y=selected_country)
-#     fig3.update_layout(title_text='Active Cases')
-
-#     return fig3
 
 
 if __name__ == '__main__':

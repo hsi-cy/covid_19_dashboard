@@ -5,13 +5,33 @@ h1, h2, h3, h4, h5, h6 {
     color: #555
 }
 
-.container {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
 h1 {
     text-align: center;
+}
+
+.biggestContainer {
+    display: block;
+    height: 100vh;
+    width: auto;
+}
+
+.title {
+    display: block;
+}
+
+.lowerPartContainer {
+    display:flex;
+    flex-direction: row;
+}
+
+.graphContainer {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.globalDataContainer {
+    display: flex;
+    flex-direction: column;
+    width: auto;
 }
