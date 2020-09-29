@@ -1,4 +1,5 @@
 import dash
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
@@ -15,6 +16,7 @@ for country in listOfCountries:
     optCountries.append(dic)
 
 dfDeaths = pd.read_csv('deaths.csv').drop('Unnamed: 0', axis=1)
+dailyGlobalNewCases = pd.read_csv('dailyGlobalNewCases.csv')
 
 
 def dfForCountryGraph(countryName):
@@ -39,22 +41,26 @@ app.layout = html.Div([
     html.Div([
         html.H1('COVID-19 Dashboard', id='title')
     ]),
-
     html.Div([
-        dcc.Dropdown(
-            id='countryDropdown',
-            options=optCountries,
-        ),
-        dcc.Graph(
-            id='confirmedGraph',
-        ),
-        dcc.Graph(
-            id='dailyNewGraph',
-        ),
-        dcc.Graph(
-            id='activeGraph',
-        )
-    ])
+        html.Div([
+            dcc.Dropdown(
+                id='countryDropdown',
+                options=optCountries,
+            ),
+            dcc.Graph(
+                id='confirmedGraph',
+            ),
+            dcc.Graph(
+                id='dailyNewGraph',
+            ),
+            dcc.Graph(
+                id='activeGraph',
+            )], className='container')],
+        # html.Div([
+
+        # ])
+    )
+
 ])
 
 
@@ -68,7 +74,7 @@ def update_figure1(selected_country):
     df = dfForCountryGraph(selected_country)
     fig = make_subplots(rows=1)
 
-    fig.add_bar(x=df['Date'], y=df['Confirmed'], marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
+    fig.add_bar(x=df['Date'], y=df['Confirmed'], marker_color='rgb(8,48,107)', marker_line_color='rgb(8,48,107)',
                 marker_line_width=1.5, opacity=1, name='Confirmed')
     fig.add_bar(x=dfRecovered['Date'], y=dfRecovered[selected_country], marker_color='rgb(102,255,178)', marker_line_color='rgb(102,255,178)',
                 marker_line_width=1.5, opacity=1, name='Recovered')
@@ -83,13 +89,17 @@ def update_figure1(selected_country):
     # fig.update_layout(transition_duration=500)
     # fig.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
     #                   marker_line_width=1.5, opacity=0.6)
-
+    bar_color = 'rgb(8,48,107)'
     df2 = dailyGlobalNewCases.copy()
     fig2 = px.bar(df2, x='Date', y=selected_country)
+    fig2.update_traces(marker_color=bar_color,
+                       marker_line_color=bar_color, opacity=1)
     fig2.update_layout(title_text='Daily New Cases')
 
     df3 = dfActive.copy()
     fig3 = px.bar(df3, x='Date', y=selected_country)
+    fig3.update_traces(marker_color=bar_color,
+                       marker_line_color=bar_color, opacity=1)
     fig3.update_layout(title_text='Active Cases')
 
     return fig, fig2, fig3
