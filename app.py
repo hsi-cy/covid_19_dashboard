@@ -16,20 +16,8 @@ for country in listOfCountries:
 
 dfDeaths = pd.read_csv("deaths.csv").drop("Unnamed: 0", axis=1)
 dailyGlobalNewCases = pd.read_csv("dailyGlobalNewCases.csv")
-
-
-def dfForCountryGraph(countryName):
-    """create a dataframe for the countryGraph"""
-    plotDf = pd.DataFrame()
-    plotDf["Date"] = dfConfirmed["Date"]
-    plotDf["Confirmed"] = dfConfirmed[countryName]
-    plotDf["Deaths"] = dfDeaths[countryName]
-    return plotDf
-
-
 dfActive = pd.read_csv("active.csv").drop("Unnamed: 0", axis=1)
 dfRecovered = pd.read_csv("recovered.csv").drop("Unnamed: 0", axis=1)
-
 dfgbConfirmed = pd.read_csv("globalTtl.csv").drop("Unnamed: 0", axis=1)
 
 # ------- app start from here -------
@@ -44,16 +32,10 @@ app.layout = html.Div(
                 dcc.Dropdown(id='countryDropdown', options=optCountries),
             ]),
             html.Div([
-                dcc.RadioItems([
-                                    options=[
-                                        {"label": "Total Cases", "value": "TTC"},
-                                        {"label": "Daily New Cases", "value": "DNC"},
-                                        {"label": "Active Cases", "value": "ATC"},
-                                    ],
-                                    value="TTC",
-                                    labelStyle={"display": "inline-block"},
-                                    id="graphSelection",
-            ]),
+                dcc.RadioItems(
+                    options=[{'label':'Total Cases', 'value':'TTC'},{'label':'Daily New Cases', 'value':'DNC'},{'label':'Active Cases', 'value':'ATC'}],
+                    
+                ),
         html.Div([
             dcc.Graph(id=chosenGraph)], className="graphContainer")
         ],
@@ -150,5 +132,5 @@ app.layout = html.Div(
 #         return fig3
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" :
     app.run_server(debug=False)

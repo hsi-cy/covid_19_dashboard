@@ -9,20 +9,23 @@ from plotly.subplots import make_subplots
 
 app = dash.Dash()
 
-app.layout = html.Div([
-    html.Div([
-        html.H1('Title should be here')
-    ], className='title'),
-    html.Div([
-        html.Div([
-            html.H2('graphs will be here')
-        ], className='graphContainer'),
-        html.Div([
-            html.H2('Global data will be here')
-        ], className='globalDataContainer')
-    ], className='lowerPartContainer')
-], className='biggestContainer')
+app.layout = html.Div(
+    [
+        html.Div([html.H1("Title should be here")], className="title"),
+        html.Div(
+            [
+                html.Div([html.H2("graphs will be here")], className="graphContainer"),
+                html.Div(
+                    [html.H2("Global data will be here")],
+                    className="globalDataContainer",
+                ),
+            ],
+            className="lowerPartContainer",
+        ),
+    ],
+    className="biggestContainer",
+)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run_server(debug=False)
