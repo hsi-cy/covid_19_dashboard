@@ -27,50 +27,70 @@ app = dash.Dash()
 app.layout = html.Div(
     [
         html.Div([html.H1("COVID-19 Dashboard")], className="title"),
-        html.Div([
-            html.Div([
-                dcc.Dropdown(id='countryDropdown', options=optCountries),
-            ]),
-            html.Div([
-                dcc.RadioItems(
-                    options=[{'label':'Total Cases', 'value':'TTC'},{'label':'Daily New Cases', 'value':'DNC'},{'label':'Active Cases', 'value':'ATC'}],
-                    
+        html.Div(
+            [
+                html.Div(
+                    [
+                        dcc.Dropdown(id="countryDropdown", options=optCountries),
+                    ]
                 ),
-        html.Div([
-            dcc.Graph(id=chosenGraph)], className="graphContainer")
-        ],
-            className="lowerPartContainer",
+                html.Div(
+                    [
+                        dcc.RadioItems(
+                            options=[
+                                {"label": "Total Cases", "value": "TTC"},
+                                {"label": "Daily New Cases", "value": "DNC"},
+                                {"label": "Active Cases", "value": "ATC"},
+                            ],
+                            id="graphSelection",
+                        ),
+                        html.Div(
+                            [dcc.Graph(id="chosenGraph")], className="graphContainer"
+                        ),
+                    ],
+                    className="lowerPartContainer",
+                ),
+                html.Div([html.H2("Global Data")], className="globalDataContainer"),
+            ],
+            className="biggestContainer",
         ),
-        html.Div([html.H2("Global Data")], className="globalDataContainer"),
-    ],
-    className="biggestContainer",
+    ]
 )
 
 
-# app.layout = html.Div([
-#     html.Div([
-#         html.H1('COVID-19 Dashboard')
-#     ], className='title'),
-#     html.Div([
-#         html.Div([
-#             dcc.Dropdown(
-#                 id='countryDropdown',
-#                 options=optCountries,
-#             ),
-#             dcc.Graph(
-#                 id='confirmedGraph',
-#             ),
-#             dcc.Graph(
-#                 id='dailyNewGraph',
-#             ),
-#             dcc.Graph(
-#                 id='activeGraph',)
-#         ], className='graphContainer'),
-#         html.Div([
-#             html.H2('Global data will be here')
-#         ], className='globalDataContainer')
-#     ], className='lowerPartContainer')
-# ], className='biggestContainer')
+# app.layout = html.Div(
+#     [
+#         html.Div([html.H1("COVID-19 Dashboard")], className="title"),
+#         html.Div(
+#             [
+#                 html.Div(
+#                     [
+#                         dcc.Dropdown(
+#                             id="countryDropdown",
+#                             options=optCountries,
+#                         ),
+#                         dcc.Graph(
+#                             id="confirmedGraph",
+#                         ),
+#                         dcc.Graph(
+#                             id="dailyNewGraph",
+#                         ),
+#                         dcc.Graph(
+#                             id="activeGraph",
+#                         ),
+#                     ],
+#                     className="graphContainer",
+#                 ),
+#                 html.Div(
+#                     [html.H2("Global data will be here")],
+#                     className="globalDataContainer",
+#                 ),
+#             ],
+#             className="lowerPartContainer",
+#         ),
+#     ],
+#     className="biggestContainer",
+# )
 
 
 # @app.callback(
@@ -132,5 +152,5 @@ app.layout = html.Div(
 #         return fig3
 
 
-if __name__ == "__main__" :
-    app.run_server(debug=False)
+if __name__ == "__main__":
+    app.run_server(debug=True)
