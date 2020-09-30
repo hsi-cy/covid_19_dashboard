@@ -1,1 +1,3 @@
-covid_venv
+covidVenv
+.vscode
+.ipynb_checkpoints/plotlyGraph-checkpoint.ipynb
