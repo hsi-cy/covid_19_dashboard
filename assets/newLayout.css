@@ -33,11 +33,26 @@ h1 {
     height: 90vh;
 }
 
-.graphContainer {
+.leftPart {
     display: flex;
     flex-direction: column;
     width: 60%;
-    height: auto;
+}
+
+.rightPart {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+}
+
+.graphHeader {
+    display: flex;
+    flex-direction: row;
+    height: 40%;
+}
+
+.graphContainer {
+    display: block;
 }
 
 .globalDataContainer {
@@ -48,10 +63,5 @@ h1 {
 
 .dropdown {
     display: block;
-    height: 5vh;
-}
-
-.graph {
-    display: block;
-    height: 45vh;
+    /* height: 5vh; */
 }

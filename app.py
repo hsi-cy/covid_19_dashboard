@@ -7,18 +7,24 @@ import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 
-dfConfirmed = pd.read_csv("confirmed.csv").drop("Unnamed: 0", axis=1)
-listOfCountries = list(dfConfirmed.columns[1:])
+# Read files
+dfConfirmed = pd.read_csv("confirmed.csv").drop("Unnamed: 0", axis=1).set_index("Date")
+dfDeaths = pd.read_csv("deaths.csv").drop("Unnamed: 0", axis=1).set_index("Date")
+dfActive = pd.read_csv("active.csv").drop("Unnamed: 0", axis=1).set_index("Date")
+dfRecovered = pd.read_csv("recovered.csv").drop("Unnamed: 0", axis=1).set_index("Date")
+dailyGlobalNewCases = (
+    pd.read_csv("dailyGlobalNewCases.csv").drop("Unnamed: 0", axis=1).set_index("Date")
+)
+dfgbConfirmed = (
+    pd.read_csv("globalTtl.csv").drop("Unnamed: 0", axis=1).set_index("Date")
+)
+
+# Create a list of countries for the dropdown menu
+listOfCountries = list(dfConfirmed.columns)
 optCountries = []
 for country in listOfCountries:
     dic = {"label": country, "value": country}
     optCountries.append(dic)
-
-dfDeaths = pd.read_csv("deaths.csv").drop("Unnamed: 0", axis=1)
-dailyGlobalNewCases = pd.read_csv("dailyGlobalNewCases.csv")
-dfActive = pd.read_csv("active.csv").drop("Unnamed: 0", axis=1)
-dfRecovered = pd.read_csv("recovered.csv").drop("Unnamed: 0", axis=1)
-dfgbConfirmed = pd.read_csv("globalTtl.csv").drop("Unnamed: 0", axis=1)
 
 # ------- app start from here -------
 
@@ -31,75 +37,95 @@ app.layout = html.Div(
             [
                 html.Div(
                     [
-                        dcc.Dropdown(id="countryDropdown", options=optCountries),
-                    ]
-                ),
-                html.Div(
-                    [
-                        dcc.RadioItems(
-                            options=[
-                                {"label": "Total Cases", "value": "TTC"},
-                                {"label": "Daily New Cases", "value": "DNC"},
-                                {"label": "Active Cases", "value": "ATC"},
+                        html.Div(
+                            [
+                                html.Div(
+                                    [
+                                        dcc.Dropdown(
+                                            id="countryDropdown", options=optCountries
+                                        )
+                                    ],
+                                    className="dropdown",
+                                ),
+                                html.Div(
+                                    [
+                                        dcc.RadioItems(
+                                            options=[
+                                                {
+                                                    "label": "Total Cases",
+                                                    "value": "TTC",
+                                                },
+                                                {
+                                                    "label": "Daily New Cases",
+                                                    "value": "DNC",
+                                                },
+                                                {
+                                                    "label": "Active Cases",
+                                                    "value": "ATC",
+                                                },
+                                            ],
+                                            id="graphSelection",
+                                            value="TTC",
+                                            labelStyle={"display": "inline-block"},
+                                        )
+                                    ],
+                                    className="radioItems",
+                                ),
                             ],
-                            id="graphSelection",
+                            className="graphHeader",
                         ),
                         html.Div(
-                            [dcc.Graph(id="chosenGraph")], className="graphContainer"
+                            [
+                                html.Div(
+                                    [dcc.Graph(id="chosenGraph")], className="graph"
+                                ),
+                            ],
+                            className="graphContainer",
                         ),
                     ],
-                    className="lowerPartContainer",
+                    className="leftPart",
                 ),
-                html.Div([html.H2("Global Data")], className="globalDataContainer"),
+                html.Div([html.H2("Here are global data")], className="rightPart"),
             ],
-            className="biggestContainer",
+            className="lowerPartContainer",
         ),
-    ]
+    ],
+    className="biggestContainer",
 )
 
 
-# app.layout = html.Div(
-#     [
-#         html.Div([html.H1("COVID-19 Dashboard")], className="title"),
-#         html.Div(
-#             [
-#                 html.Div(
-#                     [
-#                         dcc.Dropdown(
-#                             id="countryDropdown",
-#                             options=optCountries,
-#                         ),
-#                         dcc.Graph(
-#                             id="confirmedGraph",
-#                         ),
-#                         dcc.Graph(
-#                             id="dailyNewGraph",
-#                         ),
-#                         dcc.Graph(
-#                             id="activeGraph",
-#                         ),
-#                     ],
-#                     className="graphContainer",
-#                 ),
-#                 html.Div(
-#                     [html.H2("Global data will be here")],
-#                     className="globalDataContainer",
-#                 ),
-#             ],
-#             className="lowerPartContainer",
-#         ),
-#     ],
-#     className="biggestContainer",
-# )
+@app.callback(
+    Output(component_id="chosenGraph", component_property="figure"),
+    [
+        Input(component_id="countryDropdown", component_property="value"),
+        Input(component_id="graphSelection", component_property="value"),
+    ],
+)
+def update_figure(countryDropdown, graphSelection):
+    if graphSelection == "TTC":
+        fig = make_subplots(rows=1, cols=1)
+        fig.add_trace(
+            go.Bar(x=dfConfirmed.index, y=dfConfirmed[countryDropdown]), row=1, col=1
+        )
+        return fig
+    elif graphSelection == "DNC":
+        fig = make_subplots(rows=1, cols=1)
+        fig.add_trace(
+            go.Bar(x=dailyGlobalNewCases.index, y=dailyGlobalNewCases[countryDropdown]),
+            row=1,
+            col=1,
+        )
+        return fig
+    elif graphSelection == "ATC":
+        fig = make_subplots(rows=1, cols=1)
+        fig.add_trace(
+            go.Bar(x=dfActive.index, y=dfActive[countryDropdown]),
+            row=1,
+            col=1,
+        )
+        return fig
 
 
-# @app.callback(
-#     Output(component_id="chosenGraph", component_property="figure"),
-#     [
-#         Input(component_id="countryDropdown", component_property="value"),
-#         Input(component_id="graphSelection", component_property="value"),
-#     ],
-# )
 # def update_figure1(countryDropdown, graphSelection):
 #     barColor = "rgb(8,48,107)"
 #     if graphSelection == "TTL":
