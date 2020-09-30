@@ -15,21 +15,9 @@ for country in listOfCountries:
     optCountries.append(dic)
 
 dfDeaths = pd.read_csv("deaths.csv").drop("Unnamed: 0", axis=1)
-dailyGlobalNewCases = pd.read_csv("dailyGlobalNewCases.csv")
-
-
-def dfForCountryGraph(countryName):
-    """create a dataframe for the countryGraph"""
-    plotDf = pd.DataFrame()
-    plotDf["Date"] = dfConfirmed["Date"]
-    plotDf["Confirmed"] = dfConfirmed[countryName]
-    plotDf["Deaths"] = dfDeaths[countryName]
-    return plotDf
-
-
 dfActive = pd.read_csv("active.csv").drop("Unnamed: 0", axis=1)
 dfRecovered = pd.read_csv("recovered.csv").drop("Unnamed: 0", axis=1)
-
+dailyGlobalNewCases = pd.read_csv("dailyGlobalNewCases.csv")
 dfgbConfirmed = pd.read_csv("globalTtl.csv").drop("Unnamed: 0", axis=1)
 
 # ------- app start from here -------
@@ -89,32 +77,6 @@ app.layout = html.Div(
 )
 
 
-# app.layout = html.Div([
-#     html.Div([
-#         html.H1('COVID-19 Dashboard')
-#     ], className='title'),
-#     html.Div([
-#         html.Div([
-#             dcc.Dropdown(
-#                 id='countryDropdown',
-#                 options=optCountries,
-#             ),
-#             dcc.Graph(
-#                 id='confirmedGraph',
-#             ),
-#             dcc.Graph(
-#                 id='dailyNewGraph',
-#             ),
-#             dcc.Graph(
-#                 id='activeGraph',)
-#         ], className='graphContainer'),
-#         html.Div([
-#             html.H2('Global data will be here')
-#         ], className='globalDataContainer')
-#     ], className='lowerPartContainer')
-# ], className='biggestContainer')
-
-
 @app.callback(
     Output(component_id="chosenGraph", component_property="figure"),
     [
@@ -122,7 +84,7 @@ app.layout = html.Div(
         Input(component_id="graphSelection", component_property="value"),
     ],
 )
-def update_figure1(countryDropdown, graphSelection):
+def update_figure(countryDropdown, graphSelection):
     barColor = "rgb(8,48,107)"
     if graphSelection == "TTL":
 
@@ -175,4 +137,4 @@ def update_figure1(countryDropdown, graphSelection):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=False)
+    app.run_server(debug=True)

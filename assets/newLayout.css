@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'sans-serif';
 }
@@ -13,21 +19,25 @@ h1 {
     display: block;
     height: 100vh;
     width: auto;
+    overflow: hidden;
 }
 
 .title {
     display: block;
+    height: 5vh;
 }
 
 .lowerPartContainer {
     display:flex;
     flex-direction: row;
+    height: 90vh;
 }
 
 .graphContainer {
     display: flex;
     flex-direction: column;
     width: 60%;
+    height: auto;
 }
 
 .globalDataContainer {
@@ -35,3 +45,16 @@ h1 {
     flex-direction: column;
     width: auto;
 }
+
+.dropdown {
+    display: block;
+    height: 5vh;
+}
+
+.graph {
+    display: block;
+    height: 45vh;
+}
+/* 
+test 
+ */
