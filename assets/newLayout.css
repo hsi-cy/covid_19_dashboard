@@ -50,6 +50,11 @@ h1 {
     width: auto;
 }
 
+.globalDataCols{
+    display:flex;
+    flex-direction: row;
+}
+
 .graphHeader {
     display: flex;
     flex-direction: row;

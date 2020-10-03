@@ -26,9 +26,22 @@ for country in listOfCountries:
     dic = {"label": country, "value": country}
     optCountries.append(dic)
 
+# Global Data Graph
+countryAndCases = dict(
+    zip(dfConfirmed.columns.tolist(), dfConfirmed.iloc[-1, :].tolist())
+)
+topTen = sorted(countryAndCases.items(), key=lambda x: x[1], reverse=True)[0:10]
+xValue = [topTen[i][1] for i in range(10)][::-1].copy()
+yValue = [topTen[i][0] for i in range(10)][::-1].copy()
+
+# Calculate global ttl, dnc, atc
+TTL = str(round(dfConfirmed.iloc[-1, :].sum() / 1000000, 2)) + "M"
+DNC = str(round(dailyGlobalNewCases.iloc[-1, :].sum() / 1000, 2)) + "K"
+ATC = str(round(dfActive.iloc[-1, :].sum() / 1000000, 2)) + "M"
+
 # ------- app start from here -------
 
-app = dash.Dash()
+app = dash.Dash(external_stylesheets=[dbc.themes.CYBORG])
 
 app.layout = html.Div(
     [
@@ -93,7 +106,25 @@ app.layout = html.Div(
                         html.Div(
                             [
                                 html.Div(
-                                    [dcc.Graph(id="chosenGraph")], className="graph"
+                                    [
+                                        dcc.Graph(
+                                            id="chosenGraph",
+                                            figure=go.Figure(
+                                                data=[
+                                                    go.Bar(
+                                                        x=dfConfirmed.index,
+                                                        y=dfConfirmed[yValue[-1]],
+                                                    )
+                                                ],
+                                                layout=go.Layout(
+                                                    title=go.layout.Title(
+                                                        text=yValue[-1]
+                                                    )
+                                                ),
+                                            ),
+                                        )
+                                    ],
+                                    className="graph",
                                 ),
                             ],
                             className="graphContainer",
@@ -101,7 +132,36 @@ app.layout = html.Div(
                     ],
                     className="leftPart",
                 ),
-                html.Div([html.H2("Here are global data")], className="rightPart"),
+                html.Div(
+                    [
+                        html.Div([html.H2("Global Data")]),
+                        html.Div(
+                            [
+                                html.Div([html.H3("TTL"), html.P(TTL)]),
+                                html.Div([html.H3("DNC"), html.P(DNC)]),
+                                html.Div([html.H3("ATC"), html.P(ATC)]),
+                            ],
+                            className="globalDataCols",
+                        ),
+                        html.Div(
+                            [html.H2("Top Ten Countries (confirmed cases)")],
+                            className="topTenCountries",
+                        ),
+                        html.Div([html.H2("A slider will be here")]),
+                        html.Div(
+                            [
+                                dcc.Graph(
+                                    id="topTenGraph",
+                                    figure=go.Figure(
+                                        go.Bar(x=xValue, y=yValue, orientation="h")
+                                    ),
+                                )
+                            ],
+                            className="topTenGraph",
+                        ),
+                    ],
+                    className="rightPart",
+                ),
             ],
             className="lowerPartContainer",
         ),
