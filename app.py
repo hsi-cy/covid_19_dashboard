@@ -32,7 +32,11 @@ app = dash.Dash()
 
 app.layout = html.Div(
     [
-        html.Div([html.H1("COVID-19 Dashboard")], className="title"),
+        html.Div(
+            [html.H1("COVID-19 Dashboard")],
+            className="titleContainer",
+            style={"border": "2px black solid"},
+        ),
         html.Div(
             [
                 html.Div(
@@ -40,39 +44,51 @@ app.layout = html.Div(
                         html.Div(
                             [
                                 html.Div(
-                                    [
-                                        dcc.Dropdown(
-                                            id="countryDropdown", options=optCountries
-                                        )
-                                    ],
-                                    className="dropdown",
+                                    [html.H2("National Data")], className="nationalData"
                                 ),
                                 html.Div(
                                     [
-                                        dcc.RadioItems(
-                                            options=[
-                                                {
-                                                    "label": "Total Cases",
-                                                    "value": "TTC",
-                                                },
-                                                {
-                                                    "label": "Daily New Cases",
-                                                    "value": "DNC",
-                                                },
-                                                {
-                                                    "label": "Active Cases",
-                                                    "value": "ATC",
-                                                },
+                                        html.Div(
+                                            [
+                                                dcc.Dropdown(
+                                                    id="countryDropdown",
+                                                    options=optCountries,
+                                                )
                                             ],
-                                            id="graphSelection",
-                                            value="TTC",
-                                            labelStyle={"display": "inline-block"},
-                                        )
+                                            className="dropdown",
+                                        ),
+                                        html.Div(
+                                            [
+                                                dcc.RadioItems(
+                                                    options=[
+                                                        {
+                                                            "label": "Total Cases",
+                                                            "value": "TTC",
+                                                        },
+                                                        {
+                                                            "label": "Daily New Cases",
+                                                            "value": "DNC",
+                                                        },
+                                                        {
+                                                            "label": "Active Cases",
+                                                            "value": "ATC",
+                                                        },
+                                                    ],
+                                                    id="graphSelection",
+                                                    value="TTC",
+                                                    labelStyle={
+                                                        "display": "inline-block"
+                                                    },
+                                                )
+                                            ],
+                                            className="radioItems",
+                                        ),
                                     ],
-                                    className="radioItems",
+                                    className="functions",
                                 ),
                             ],
                             className="graphHeader",
+                            style={"border": "2px red solid"},
                         ),
                         html.Div(
                             [
@@ -179,4 +195,4 @@ def update_figure(countryDropdown, graphSelection):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=False)

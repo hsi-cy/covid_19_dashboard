@@ -8,7 +8,8 @@ body {
     font-family: 'sans-serif';
 }
 h1, h2, h3, h4, h5, h6 {
-    color: #555
+    color: #555;
+    font-family: 'sans-serif';
 }
 
 h1 {
@@ -20,17 +21,21 @@ h1 {
     height: 100vh;
     width: auto;
     overflow: hidden;
+    /* background-color: #3c40c6; */
 }
 
-.title {
+.titleContainer {
     display: block;
-    height: 5vh;
+    height: 10%;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    border: 2px, solid, red;
 }
 
 .lowerPartContainer {
     display:flex;
     flex-direction: row;
-    height: 90vh;
+    height: auto;
 }
 
 .leftPart {
@@ -48,7 +53,17 @@ h1 {
 .graphHeader {
     display: flex;
     flex-direction: row;
-    height: 40%;
+    height: 20%;
+}
+
+.nationalData {
+    display: block;
+    width: 40%;
+}
+
+.functions {
+    display: block;
+    width: auto;
 }
 
 .graphContainer {
