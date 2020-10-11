@@ -41,9 +41,25 @@ TTL = str(round(dfConfirmed.iloc[-1, :].sum() / 1000000, 2)) + "M"
 DNC = str(round(dailyGlobalNewCases.iloc[-1, :].sum() / 1000, 2)) + "K"
 ATC = str(round(dfActive.iloc[-1, :].sum() / 1000000, 2)) + "M"
 
+# Country codes
+countryCode = pd.read_csv("countryCode.csv", header=None)
+countryCode.rename({0: "Country", 1: "Code"}, axis=1, inplace=True)
+countries = dfConfirmed.columns.tolist()
+# Add code to each country
+codeList = []
+codeDict = dict(zip(countryCode["Country"].tolist(), countryCode["Code"].tolist()))
+for country in countries:
+    try:
+        codeList.append(codeDict[country])
+    except:
+        codeList.append("N/A")
+
+codeList[91] = "XKX"
+codeList[125] = "MKD"
+
 # ------- app start from here -------
 
-app = dash.Dash(external_stylesheets=[dbc.themes.FLATLY])
+app = dash.Dash(external_stylesheets=[dbc.themes.COSMO])
 
 """NavBar Start"""
 nav_item = dbc.NavItem(
@@ -106,9 +122,9 @@ navbar = dbc.Navbar(
             ),
         ]
     ),
-    color="dark",
-    dark=True,
-    className="mb-5",
+    # color="dark",
+    # dark=True,
+    className="mb-5 navbar navbar-expand-lg navbar-dark bg-dark",
 )
 """NavBar End"""
 
@@ -216,6 +232,37 @@ graphActive = html.Div(
     className="graph",
 )
 
+worldMap = html.Div(
+    [
+        dcc.Graph(
+            id="worldMap",
+            figure=go.Figure(
+                data=[
+                    go.Choropleth(
+                        locations=codeList,
+                        z=dfConfirmed.iloc[-1, :].tolist(),
+                        text=dfConfirmed.columns.tolist(),
+                        colorscale="Reds",
+                        autocolorscale=False,
+                        reversescale=False,
+                        marker_line_color="darkgray",
+                        marker_line_width=0.5,
+                        zoom=12,
+                    )
+                ],
+                layout=go.Layout(
+                    title=go.layout.Title(text="Covid-19 World Map"),
+                    geo=dict(
+                        showframe=False,
+                        showcoastlines=False,
+                        projection_type="equirectangular",
+                    ),
+                ),
+            ),
+        )
+    ]
+)
+
 
 ###############################
 dropdown = html.Div(
@@ -281,20 +328,7 @@ app.layout = html.Div(
     [
         navbar,
         dbc.Container(
-            dbc.Row(
-                [
-                    dbc.Col([cardTTL, cardDNC, cardATC], width=3),
-                    dbc.Col(topTenGraph, width=3),
-                    dbc.Col(
-                        [
-                            graphConfirmed,
-                            graphDailyNew,
-                            graphActive,
-                        ],
-                        width=6,
-                    ),
-                ]
-            )
+            dbc.Row([dbc.Col([cardTTL, cardDNC, cardATC]), dbc.Col(worldMap)])
         ),
     ]
 )
